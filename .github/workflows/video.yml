@@ -11,7 +11,7 @@ on:
       quality:
         description: "Manim render quality"
         required: true
-        default: low
+        default: high
         type: choice
         options: [low, medium, high]
 
@@ -48,7 +48,7 @@ jobs:
         run: python -m cs2_manim.pipeline prepare --catalog data/demo/catalog.json --prices data/demo/prices.csv --output build --max-series 2
       - name: Render chapter MP4s and compilation
         env:
-          QUALITY: ${{ inputs.quality || 'low' }}
+          QUALITY: ${{ inputs.quality || 'high' }}
         run: python -m cs2_manim.render --manifest build/manifest.json --output dist --quality "$QUALITY"
       - name: Verify expected outputs
         run: |
@@ -57,6 +57,8 @@ jobs:
           test -s dist/CS2-Market-Compilation.mp4
           test -s dist/chapters.txt
           test -s dist/report.json
+          ffmpeg -v error -xerror -i dist/CS2-Market-Compilation.mp4 -f null -
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,avg_frame_rate -of json dist/CS2-Market-Compilation.mp4
       - uses: actions/upload-artifact@v4
         if: always()
         with:
