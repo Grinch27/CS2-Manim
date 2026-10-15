@@ -44,6 +44,7 @@ def render(manifest_file, output, quality):
         env = dict(os.environ, CS2_CHAPTER_FILE=str(data_file))
         quality_flag = {"low": "-ql", "medium": "-qm", "high": "-qh"}[quality]
         run(["manim", quality_flag, "--format=mp4", "--disable_caching",
+             "--fps", "30" if quality == "high" else "15" if quality == "low" else "30",
              "--media_dir", str(media), "-o", slug,
              str(scene_file), "MarketChapter"], env=env)
         matches = list(media.rglob(slug + ".mp4"))
