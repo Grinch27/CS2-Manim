@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cs2-manim"
+version = "0.1.0"
+description = "CS2 series market data videos rendered with Manim"
+requires-python = ">=3.11,<3.14"
+dependencies = ["manim==0.22.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
