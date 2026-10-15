@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "dataset_type": "demo",
+  "source": "SYNTHETIC SAMPLE - NOT STEAM DATA",
+  "series": [
+    {
+      "id": "demo-collection",
+      "type": "collection",
+      "name": "Sample Weapon Collection",
+      "items": [
+        {
+          "name": "Demo Rifle | Azure (Factory New)",
+          "market_hash_name": "Demo Rifle | Azure (Factory New)",
+          "rarity": "Covert"
+        },
+        {
+          "name": "Demo Pistol | Amber (Field-Tested)",
+          "market_hash_name": "Demo Pistol | Amber (Field-Tested)",
+          "rarity": "Restricted"
+        },
+        {
+          "name": "Demo SMG | Neon (Minimal Wear)",
+          "market_hash_name": "Demo SMG | Neon (Minimal Wear)",
+          "rarity": "Mil-Spec Grade"
+        }
+      ]
+    },
+    {
+      "id": "demo-case",
+      "type": "case",
+      "name": "Sample Weapon Case",
+      "items": [
+        {
+          "name": "Demo Rifle | Cobalt (Factory New)",
+          "market_hash_name": "Demo Rifle | Cobalt (Factory New)",
+          "rarity": "Classified"
+        },
+        {
+          "name": "Demo Shotgun | Quartz (Field-Tested)",
+          "market_hash_name": "Demo Shotgun | Quartz (Field-Tested)",
+          "rarity": "Mil-Spec Grade"
+        }
+      ]
+    }
+  ]
+}
