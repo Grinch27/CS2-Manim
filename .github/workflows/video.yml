@@ -1,0 +1,70 @@
+# TODO: Select an authorized market-price provider before enabling scheduled collection.
+# RISK: Demo artifacts contain synthetic prices; releases/public posting remain disabled.
+# VERIFY: Unit tests, two Manim MP4 files, ffprobe duration, merged video artifact.
+name: CS2 Manim Preview
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      quality:
+        description: "Manim render quality"
+        required: true
+        default: low
+        type: choice
+        options: [low, medium, high]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cs2-manim-preview
+  cancel-in-progress: false
+
+jobs:
+  render:
+    name: Unit tests and synthetic demo MP4
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Manim native dependencies
+        run: |
+          sudo apt-get -qq update
+          sudo apt-get -yqq install build-essential pkg-config libcairo2-dev libpango1.0-dev ffmpeg fonts-dejavu-core
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+      - name: Verify data pipeline
+        run: python -m unittest discover -s tests -v
+      - name: Prepare both demo series
+        run: python -m cs2_manim.pipeline prepare --catalog data/demo/catalog.json --prices data/demo/prices.csv --output build --max-series 2
+      - name: Render chapter MP4s and compilation
+        env:
+          QUALITY: ${{ inputs.quality || 'low' }}
+        run: python -m cs2_manim.render --manifest build/manifest.json --output dist --quality "$QUALITY"
+      - name: Verify expected outputs
+        run: |
+          test -s dist/chapter_000_collection.mp4
+          test -s dist/chapter_001_case.mp4
+          test -s dist/CS2-Market-Compilation.mp4
+          test -s dist/chapters.txt
+          test -s dist/report.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cs2-manim-preview
+          if-no-files-found: warn
+          retention-days: 7
+          path: |
+            dist/*.mp4
+            dist/chapters.txt
+            dist/report.json
+            build/*.json
